@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Área do Cliente - Viagem Certa">
+    <title>Dashboard | Viagem Certa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="antialiased bg-gray-50">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="flex flex-col h-full">
+                <!-- Logo -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <img src="assets/images/logo.png" alt="Viagem Certa Logo" class="h-10 w-auto">
+                    </a>
+                    <button id="sidebar-close" class="lg:hidden text-gray-600 hover:text-[#8b8360]">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- User Info -->
+                <div class="p-6 border-b border-gray-200 bg-gradient-to-br from-[#f5f3e8] to-white">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#e1ddad] to-[#d4cfa0] text-gray-900 rounded-full flex items-center justify-center text-white font-bold text-lg" id="user-avatar">
+                            U
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate" id="user-name">Carregando...</p>
+                            <p class="text-xs text-gray-500 truncate" id="user-email">usuario@email.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 p-4 overflow-y-auto">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#f5f3e8] hover:text-[#8b8360] transition" data-page="dashboard">
+                                <i class="fas fa-home w-5"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#viagens" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#f5f3e8] hover:text-[#8b8360] transition" data-page="viagens">
+                                <i class="fas fa-bus w-5"></i>
+                                <span>Minhas Viagens</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#solicitar" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#f5f3e8] hover:text-[#8b8360] transition" data-page="solicitar">
+                                <i class="fas fa-plus-circle w-5"></i>
+                                <span>Solicitar Transporte</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#historico" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#f5f3e8] hover:text-[#8b8360] transition" data-page="historico">
+                                <i class="fas fa-history w-5"></i>
+                                <span>Histórico</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#perfil" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#f5f3e8] hover:text-[#8b8360] transition" data-page="perfil">
+                                <i class="fas fa-user w-5"></i>
+                                <span>Perfil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#configuracoes" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#f5f3e8] hover:text-[#8b8360] transition" data-page="configuracoes">
+                                <i class="fas fa-cog w-5"></i>
+                                <span>Configurações</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Seção Admin (visível apenas para admins) -->
+                    <div id="admin-menu-section" class="hidden mt-6 pt-4 border-t border-gray-300">
+                        <div class="px-4 mb-3">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-red-600 uppercase">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Área Administrativa</span>
+                            </div>
+                        </div>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition">
+                                    <i class="fas fa-user-shield w-5"></i>
+                                    <span>Painel Admin</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- Logout Button -->
+                <div class="p-4 border-t border-gray-200">
+                    <button id="logout-btn" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 w-full transition">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span>Sair</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Overlay (Mobile) -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="flex items-center justify-between px-4 py-4 lg:px-8">
+                    <!-- Mobile Menu Button -->
+                    <button id="sidebar-open" class="lg:hidden text-gray-600 hover:text-[#8b8360]">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+
+                    <!-- Page Title -->
+                    <div>
+                        <h1 class="text-2xl font-bold text-[#8b8360]" id="page-title">Dashboard</h1>
+                        <p class="text-sm text-gray-500" id="page-subtitle">Bem-vindo de volta!</p>
+                    </div>
+
+                    <!-- Header Actions -->
+                    <div class="flex items-center gap-4">
+                        <!-- Notificações -->
+                        <div class="relative">
+                            <button id="notification-bell" class="relative text-gray-600 hover:text-[#8b8360] transition">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span id="notification-badge" class="hidden absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold">
+                                    0
+                                </span>
+                            </button>
+                            
+                            <!-- Dropdown de Notificações -->
+                            <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 md:w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[32rem] flex flex-col">
+                                <!-- Header do Dropdown -->
+                                <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg">
+                                    <h3 class="font-semibold text-gray-900">
+                                        <i class="fas fa-bell mr-2 text-[#8b8360]"></i>
+                                        Notificações
+                                    </h3>
+                                    <button onclick="window.notificationManager?.markAllAsRead()" class="text-xs text-[#8b8360] hover:text-blue-700 font-medium">
+                                        Marcar todas como lidas
+                                    </button>
+                                </div>
+                                
+                                <!-- Lista de Notificações -->
+                                <div id="notification-list" class="overflow-y-auto flex-1">
+                                    <!-- Notificações serão carregadas aqui -->
+                                    <div class="p-8 text-center text-gray-500">
+                                        <div class="loading-dots justify-center mb-2">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                        <p class="text-sm">Carregando notificações...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="p-4 lg:p-8">
+                <!-- Dashboard Home -->
+                <div id="content-dashboard" class="page-content">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Transportes Ativos -->
+                        <div class="card hover-lift animate-fadeInUp">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium mb-1">Transportes Ativos</p>
+                                    <p class="text-3xl font-bold text-[#8b8360]" id="stat-ativos">0</p>
+                                    <p class="text-xs text-green-600 mt-1">
+                                        <i class="fas fa-arrow-up"></i> Em andamento
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-[#eae6c0] rounded-full flex items-center justify-center">
+                                    <i class="fas fa-truck-moving text-[#8b8360] text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Próximas Viagens -->
+                        <div class="card hover-lift animate-fadeInUp delay-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium mb-1">Próximas Viagens</p>
+                                    <p class="text-3xl font-bold text-[#8b8360]" id="stat-proximas">0</p>
+                                    <p class="text-xs text-[#a39975] mt-1">
+                                        <i class="fas fa-calendar"></i> Agendadas
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-calendar-check text-yellow-600 text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Histórico Total -->
+                        <div class="card hover-lift animate-fadeInUp delay-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium mb-1">Histórico Total</p>
+                                    <p class="text-3xl font-bold text-[#8b8360]" id="stat-total">0</p>
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        <i class="fas fa-check-circle"></i> Concluídas
+                                    </p>
+                                </div>
+                                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-history text-green-600 text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Viagens Ativas -->
+                    <div class="card animate-fadeInUp delay-300">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <h2 class="text-xl font-bold text-[#8b8360]">Viagens Ativas</h2>
+                            <div class="flex flex-wrap gap-2">
+                                <select id="filter-viagens-status" class="form-input text-sm py-2 w-auto" onchange="applyFilters()">
+                                    <option value="">Todos os Status</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="agendado">Agendado</option>
+                                    <option value="ativo">Em Andamento</option>
+                                </select>
+                                <button onclick="exportViagensCSV()" class="btn-outline text-sm px-4 py-2" title="Exportar para CSV">
+                                    <i class="fas fa-download"></i>
+                                    <span class="hidden md:inline">Exportar</span>
+                                </button>
+                                <a href="#solicitar" class="btn-primary text-sm px-4 py-2">
+                                    <i class="fas fa-plus"></i>
+                                    Nova viagem
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Tabela Desktop -->
+                        <div class="hidden lg:block overflow-x-auto">
+                            <table class="w-full" id="viagens-table">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Data Viagem</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Solicitado em</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Endereço de Partida</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Endereço de Destino</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Status</th>
+                                        <th class="text-center px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="viagens-tbody" class="divide-y divide-gray-200">
+                                    <!-- Dados serão carregados via JavaScript -->
+                                    <tr>
+                                        <td colspan="6" class="text-center py-12 text-gray-500">
+                                            <i class="fas fa-inbox text-4xl mb-3"></i>
+                                            <p>Nenhuma viagem ativa no momento</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Cards Mobile -->
+                        <div class="lg:hidden space-y-4" id="viagens-cards">
+                            <div class="text-center py-12 text-gray-500">
+                                <i class="fas fa-inbox text-4xl mb-3"></i>
+                                <p>Nenhuma viagem ativa no momento</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minhas Viagens (Hidden by default) -->
+                <div id="content-viagens" class="page-content hidden">
+                    <div class="card">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-6">Minhas Viagens</h2>
+                        <p class="text-gray-600">Visualize todas as suas viagens agendadas e em andamento.</p>
+                        <!-- Conteúdo será implementado quando integrar com backend -->
+                    </div>
+                </div>
+
+                <!-- Solicitar Transporte -->
+                <div id="content-solicitar" class="page-content hidden">
+                    <div class="card max-w-4xl">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-2">Solicitar Novo Transporte</h2>
+                        <p class="text-gray-600 mb-6">Preencha as informações detalhadas para sua solicitação</p>
+                        
+                        <form id="solicitar-form" class="space-y-8">
+                            <!-- Seção 1: Informações Básicas -->
+                            <div class="bg-[#f5f3e8] border-l-4 border-[#e1ddad] p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-[#8b8360] mb-4">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    Informações Básicas
+                                </h3>
+                                <div class="grid md:grid-cols-3 gap-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Tipo de Serviço *</label>
+                                        <select name="tipo_servico" id="tipo-servico" class="form-input" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="passageiro">Transporte de Passageiro</option>
+                                            <option value="mercadoria">Transporte de Mercadoria</option>
+                                            <option value="executivo">Viagem Executiva</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Data da Viagem *</label>
+                                        <input type="date" name="data_viagem" class="form-input" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Horário</label>
+                                        <input type="time" name="horario_viagem" class="form-input">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção de Preço Estimado -->
+                            <div id="secao-preco" class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg hidden">
+                                <h3 class="text-lg font-bold text-yellow-800 mb-4">
+                                    <i class="fas fa-dollar-sign mr-2"></i>
+                                    Preço Estimado da Viagem
+                                </h3>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-3xl font-bold text-yellow-900">R$ <span id="preco-total">0,00</span></div>
+                                        <p class="text-sm text-gray-600 mt-1">
+                                            <i class="fas fa-route mr-1"></i>
+                                            Distância: <span id="distancia-km">0</span> km × R$ 0,50/km
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-2">
+                                            <i class="fas fa-info-circle mr-1"></i>
+                                            O preço é calculado automaticamente conforme você preenche os endereços
+                                        </p>
+                                    </div>
+                                    <div class="text-yellow-600">
+                                        <i class="fas fa-calculator text-4xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 2: Endereço de Origem -->
+                            <div class="bg-green-50 border-l-4 border-green-600 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-green-800 mb-4">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Endereço de Origem
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <!-- Tipo de Local de Partida -->
+                                    <div class="form-group md:col-span-2">
+                                        <label class="form-label">Local de Partida *</label>
+                                        <div class="flex gap-4">
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="origem_tipo" value="casa" checked class="mr-2 w-4 h-4">
+                                                <span class="text-sm">
+                                                    <i class="fas fa-home text-green-600 mr-1"></i>
+                                                    Buscar em Casa
+                                                </span>
+                                            </label>
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="origem_tipo" value="rodoviaria" class="mr-2 w-4 h-4">
+                                                <span class="text-sm">
+                                                    <i class="fas fa-bus text-green-600 mr-1"></i>
+                                                    Buscar na Rodoviária
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Estado *</label>
+                                        <select name="origem_estado" id="origem-estado" class="form-input" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="AC">Acre</option>
+                                            <option value="AL">Alagoas</option>
+                                            <option value="AP">Amapá</option>
+                                            <option value="AM">Amazonas</option>
+                                            <option value="BA">Bahia</option>
+                                            <option value="CE">Ceará</option>
+                                            <option value="DF">Distrito Federal</option>
+                                            <option value="ES">Espírito Santo</option>
+                                            <option value="GO">Goiás</option>
+                                            <option value="MA">Maranhão</option>
+                                            <option value="MT">Mato Grosso</option>
+                                            <option value="MS">Mato Grosso do Sul</option>
+                                            <option value="MG">Minas Gerais</option>
+                                            <option value="PA">Pará</option>
+                                            <option value="PB">Paraíba</option>
+                                            <option value="PR">Paraná</option>
+                                            <option value="PE">Pernambuco</option>
+                                            <option value="PI">Piauí</option>
+                                            <option value="RJ">Rio de Janeiro</option>
+                                            <option value="RN">Rio Grande do Norte</option>
+                                            <option value="RS">Rio Grande do Sul</option>
+                                            <option value="RO">Rondônia</option>
+                                            <option value="RR">Roraima</option>
+                                            <option value="SC">Santa Catarina</option>
+                                            <option value="SP">São Paulo</option>
+                                            <option value="SE">Sergipe</option>
+                                            <option value="TO">Tocantins</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Cidade *</label>
+                                        <input type="text" name="origem_cidade" id="origem-cidade" class="form-input" placeholder="Nome da cidade" required>
+                                    </div>
+                                    
+                                    <!-- Campos de endereço completo (apenas para casa) -->
+                                    <div id="origem-campos-endereco" class="md:col-span-2 grid md:grid-cols-2 gap-6">
+                                        <div class="form-group">
+                                            <label class="form-label">CEP *</label>
+                                            <input type="text" name="origem_cep" id="origem-cep" class="form-input" placeholder="00000-000" maxlength="9">
+                                            <p class="text-xs text-gray-500 mt-1">
+                                                <i class="fas fa-info-circle"></i>
+                                                O endereço será preenchido automaticamente
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Bairro *</label>
+                                            <input type="text" name="origem_bairro" id="origem-bairro" class="form-input" placeholder="Nome do bairro">
+                                        </div>
+                                        
+                                        <div class="form-group md:col-span-2">
+                                            <label class="form-label">Endereço Completo (Rua e Número) *</label>
+                                            <input type="text" name="origem_endereco" id="origem-endereco" class="form-input" placeholder="Rua, Avenida, número...">
+                                        </div>
+                                        
+                                        <div class="form-group md:col-span-2">
+                                            <label class="form-label">Complemento</label>
+                                            <input type="text" name="origem_complemento" class="form-input" placeholder="Apartamento, bloco, ponto de referência... (opcional)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 3: Endereço de Destino -->
+                            <div class="bg-red-50 border-l-4 border-red-600 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-red-800 mb-4">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Endereço de Destino
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <!-- Tipo de Local de Entrega -->
+                                    <div class="form-group md:col-span-2">
+                                        <label class="form-label">Local de Entrega *</label>
+                                        <div class="flex gap-4">
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="destino_tipo" value="casa" checked class="mr-2 w-4 h-4">
+                                                <span class="text-sm">
+                                                    <i class="fas fa-home text-red-600 mr-1"></i>
+                                                    Entregar em Casa
+                                                </span>
+                                            </label>
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="destino_tipo" value="rodoviaria" class="mr-2 w-4 h-4">
+                                                <span class="text-sm">
+                                                    <i class="fas fa-bus text-red-600 mr-1"></i>
+                                                    Entregar na Rodoviária
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Estado *</label>
+                                        <select name="destino_estado" id="destino-estado" class="form-input" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="AC">Acre</option>
+                                            <option value="AL">Alagoas</option>
+                                            <option value="AP">Amapá</option>
+                                            <option value="AM">Amazonas</option>
+                                            <option value="BA">Bahia</option>
+                                            <option value="CE">Ceará</option>
+                                            <option value="DF">Distrito Federal</option>
+                                            <option value="ES">Espírito Santo</option>
+                                            <option value="GO">Goiás</option>
+                                            <option value="MA">Maranhão</option>
+                                            <option value="MT">Mato Grosso</option>
+                                            <option value="MS">Mato Grosso do Sul</option>
+                                            <option value="MG">Minas Gerais</option>
+                                            <option value="PA">Pará</option>
+                                            <option value="PB">Paraíba</option>
+                                            <option value="PR">Paraná</option>
+                                            <option value="PE">Pernambuco</option>
+                                            <option value="PI">Piauí</option>
+                                            <option value="RJ">Rio de Janeiro</option>
+                                            <option value="RN">Rio Grande do Norte</option>
+                                            <option value="RS">Rio Grande do Sul</option>
+                                            <option value="RO">Rondônia</option>
+                                            <option value="RR">Roraima</option>
+                                            <option value="SC">Santa Catarina</option>
+                                            <option value="SP">São Paulo</option>
+                                            <option value="SE">Sergipe</option>
+                                            <option value="TO">Tocantins</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Cidade *</label>
+                                        <input type="text" name="destino_cidade" id="destino-cidade" class="form-input" placeholder="Nome da cidade" required>
+                                    </div>
+                                    
+                                    <!-- Campos de endereço completo (apenas para casa) -->
+                                    <div id="destino-campos-endereco" class="md:col-span-2 grid md:grid-cols-2 gap-6">
+                                        <div class="form-group">
+                                            <label class="form-label">CEP *</label>
+                                            <input type="text" name="destino_cep" id="destino-cep" class="form-input" placeholder="00000-000" maxlength="9">
+                                            <p class="text-xs text-gray-500 mt-1">
+                                                <i class="fas fa-info-circle"></i>
+                                                O endereço será preenchido automaticamente
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Bairro *</label>
+                                            <input type="text" name="destino_bairro" id="destino-bairro" class="form-input" placeholder="Nome do bairro">
+                                        </div>
+                                        
+                                        <div class="form-group md:col-span-2">
+                                            <label class="form-label">Endereço Completo (Rua e Número) *</label>
+                                            <input type="text" name="destino_endereco" id="destino-endereco" class="form-input" placeholder="Rua, Avenida, número...">
+                                        </div>
+                                        
+                                        <div class="form-group md:col-span-2">
+                                            <label class="form-label">Complemento</label>
+                                            <input type="text" name="destino_complemento" class="form-input" placeholder="Apartamento, bloco, ponto de referência... (opcional)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 4A: Informações de Passageiros (Condicional) -->
+                            <div id="secao-passageiros" class="bg-purple-50 border-l-4 border-purple-600 p-6 rounded-lg hidden">
+                                <h3 class="text-lg font-bold text-purple-800 mb-4">
+                                    <i class="fas fa-users mr-2"></i>
+                                    Informações dos Passageiros
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Quantidade de Passageiros *</label>
+                                        <input type="number" name="quantidade_passageiros" id="quantidade-passageiros" class="form-input" min="1" placeholder="Ex: 2">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Possui Bagagem?</label>
+                                        <div class="flex items-center gap-4 mt-2">
+                                            <label class="flex items-center">
+                                                <input type="checkbox" name="possui_bagagem" id="possui-bagagem" class="mr-2">
+                                                <span class="text-sm">Sim, possui bagagem</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group hidden" id="campo-quantidade-bagagens">
+                                        <label class="form-label">Quantidade de Bagagens</label>
+                                        <input type="number" name="quantidade_bagagens" class="form-input" min="1" placeholder="Ex: 3">
+                                    </div>
+                                    
+                                    <div class="form-group md:col-span-2">
+                                        <label class="form-label">Necessidades Especiais</label>
+                                        <textarea name="necessidades_especiais" class="form-input" rows="3" placeholder="Ex: Cadeira de rodas, assento infantil, idoso, gestante... (opcional)"></textarea>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            <i class="fas fa-info-circle"></i>
+                                            Informe se há necessidade de adaptações especiais
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 4B: Informações de Carga (Condicional) -->
+                            <div id="secao-carga" class="bg-orange-50 border-l-4 border-orange-600 p-6 rounded-lg hidden">
+                                <h3 class="text-lg font-bold text-orange-800 mb-4">
+                                    <i class="fas fa-boxes mr-2"></i>
+                                    Informações da Carga
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div class="form-group md:col-span-2">
+                                        <label class="form-label">Descrição da Carga *</label>
+                                        <textarea name="descricao_carga" id="descricao-carga" class="form-input" rows="3" placeholder="Descreva detalhadamente o que será transportado..."></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Peso (kg) * - Máximo: 1000kg (1 tonelada)</label>
+                                        <input type="number" name="peso_kg" id="peso-kg" class="form-input" step="0.01" min="0.01" max="1000" placeholder="Ex: 25.5">
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            <i class="fas fa-weight text-orange-600 mr-1"></i>
+                                            Limite máximo de 1 tonelada por transporte
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Valor Declarado (R$)</label>
+                                        <input type="number" name="valor_declarado" class="form-input" step="0.01" min="0" placeholder="Ex: 1500.00">
+                                        <p class="text-xs text-gray-500 mt-1">Para fins de seguro (opcional)</p>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Altura (cm) *</label>
+                                        <input type="number" name="dimensao_altura_cm" id="dimensao-altura" class="form-input" step="0.1" min="0.1" placeholder="Ex: 50">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Largura (cm) *</label>
+                                        <input type="number" name="dimensao_largura_cm" id="dimensao-largura" class="form-input" step="0.1" min="0.1" placeholder="Ex: 40">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Profundidade (cm) *</label>
+                                        <input type="number" name="dimensao_profundidade_cm" id="dimensao-profundidade" class="form-input" step="0.1" min="0.1" placeholder="Ex: 30">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Volume Total</label>
+                                        <div class="px-4 py-3 bg-white border border-gray-300 rounded-lg">
+                                            <span id="volume-total" class="text-lg font-semibold text-[#8b8360]">0 m³</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Calculado automaticamente</p>
+                                    </div>
+                                    
+                                    <div class="form-group md:col-span-2">
+                                        <label class="form-label">Características da Carga</label>
+                                        <div class="space-y-2">
+                                            <label class="flex items-center">
+                                                <input type="checkbox" name="carga_fragil" class="mr-2">
+                                                <span class="text-sm">
+                                                    <i class="fas fa-exclamation-triangle text-yellow-600 mr-1"></i>
+                                                    Carga frágil (requer cuidado especial)
+                                                </span>
+                                            </label>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" name="requer_embalagem_especial" class="mr-2">
+                                                <span class="text-sm">
+                                                    <i class="fas fa-box text-orange-600 mr-1"></i>
+                                                    Requer embalagem especial
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seção 5: Observações Adicionais -->
+                            <div class="bg-gray-50 border-l-4 border-gray-400 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4">
+                                    <i class="fas fa-comment mr-2"></i>
+                                    Observações Adicionais
+                                </h3>
+                                <div class="form-group">
+                                    <label class="form-label">Informações Adicionais</label>
+                                    <textarea name="observacao" class="form-input" rows="4" placeholder="Qualquer informação adicional que possa ser relevante... (opcional)"></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        <i class="fas fa-info-circle"></i>
+                                        Campo opcional - use para informar detalhes extras
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Botão de Envio -->
+                            <div class="flex gap-4 justify-end pt-4 border-t">
+                                <button type="button" onclick="document.getElementById('solicitar-form').reset(); toggleCamposCondicionais()" class="btn-outline px-8 py-3">
+                                    <i class="fas fa-times mr-2"></i>
+                                    Limpar Formulário
+                                </button>
+                                <button type="submit" id="solicitar-btn" class="btn-primary px-8 py-3 ripple">
+                                    <span id="btn-text">
+                                        <i class="fas fa-paper-plane mr-2"></i>
+                                        Enviar Solicitação
+                                    </span>
+                                    <span id="btn-loading" class="hidden">
+                                        <div class="spinner"></div>
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Histórico -->
+                <div id="content-historico" class="page-content hidden">
+                    <div class="card">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-6">Histórico de Viagens</h2>
+                        <p class="text-gray-600">Consulte o histórico completo de todas as suas viagens.</p>
+                        <!-- Conteúdo será implementado quando integrar com backend -->
+                    </div>
+                </div>
+
+                <!-- Perfil -->
+                <div id="content-perfil" class="page-content hidden">
+                    <div class="card max-w-2xl">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-6">Meu Perfil</h2>
+                        <form id="perfil-form" class="space-y-6">
+                            <div class="form-group">
+                                <label class="form-label">Nome Completo</label>
+                                <input type="text" id="perfil-nome" class="form-input" placeholder="Seu nome completo">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">E-mail</label>
+                                <input type="email" id="perfil-email" class="form-input" placeholder="seu@email.com" disabled>
+                                <p class="text-xs text-gray-500 mt-1">O e-mail não pode ser alterado</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Telefone</label>
+                                <input type="tel" id="perfil-telefone" class="form-input" placeholder="(79) 9 9999-9999">
+                            </div>
+
+                            <button type="submit" class="btn-primary px-8 py-3">
+                                <i class="fas fa-save"></i>
+                                Salvar Alterações
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Configurações -->
+                <div id="content-configuracoes" class="page-content hidden">
+                    <div class="card max-w-2xl">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-6">Configurações</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="border-b border-gray-200 pb-6">
+                                <h3 class="font-semibold text-gray-900 mb-4">Notificações</h3>
+                                <div class="space-y-3">
+                                    <label class="flex items-center justify-between">
+                                        <span class="text-gray-700">Notificações por e-mail</span>
+                                        <input type="checkbox" class="w-4 h-4 text-[#8b8360] rounded" checked>
+                                    </label>
+                                    <label class="flex items-center justify-between">
+                                        <span class="text-gray-700">Atualizações de viagem</span>
+                                        <input type="checkbox" class="w-4 h-4 text-[#8b8360] rounded" checked>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="border-b border-gray-200 pb-6">
+                                <h3 class="font-semibold text-gray-900 mb-4">Segurança</h3>
+                                <button class="btn-outline px-6 py-2">
+                                    <i class="fas fa-key"></i>
+                                    Alterar Senha
+                                </button>
+                            </div>
+
+                            <div>
+                                <h3 class="font-semibold text-red-600 mb-4">Zona de Perigo</h3>
+                                <button class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+                                    <i class="fas fa-trash"></i>
+                                    Excluir Conta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Modal de Detalhes da Viagem -->
+    <div id="modal-viagem" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all scale-95 opacity-0">
+            <!-- Header do Modal -->
+            <div class="sticky top-0 bg-gradient-to-r from-[#e1ddad] to-[#d4cfa0] text-white px-6 py-4 rounded-t-2xl flex items-center justify-between">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fas fa-route"></i>
+                    Detalhes da Viagem
+                </h2>
+                <button onclick="closeModalViagem()" class="text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Conteúdo do Modal -->
+            <div class="p-6 space-y-6">
+                <!-- Informações Principais -->
+                <div class="bg-[#f5f3e8] rounded-xl p-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-600 uppercase">Endereço de Partida</label>
+                            <p id="modal-origem" class="text-lg font-semibold text-[#8b8360] flex items-center gap-2 mt-1">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>-</span>
+                            </p>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-600 uppercase">Endereço de Destino</label>
+                            <p id="modal-destino" class="text-lg font-semibold text-green-600 flex items-center gap-2 mt-1">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>-</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status e Informações -->
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <label class="text-xs font-semibold text-gray-600 uppercase block mb-2">Status</label>
+                        <div id="modal-status">-</div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <label class="text-xs font-semibold text-gray-600 uppercase block mb-2">Data da Viagem</label>
+                        <p id="modal-data-viagem" class="text-gray-900 font-semibold">-</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <label class="text-xs font-semibold text-gray-600 uppercase block mb-2">Solicitado em</label>
+                        <p id="modal-data" class="text-gray-900 text-sm">-</p>
+                    </div>
+                </div>
+
+                <!-- Cliente -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <label class="text-xs font-semibold text-gray-600 uppercase block mb-2">Cliente</label>
+                    <p id="modal-cliente" class="text-gray-900 flex items-center gap-2">
+                        <i class="fas fa-user text-[#8b8360]"></i>
+                        <span>-</span>
+                    </p>
+                </div>
+
+                <!-- Observações -->
+                <div id="modal-observacoes-container" class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <label class="text-xs font-semibold text-gray-600 uppercase block mb-2">Observações</label>
+                    <p id="modal-observacoes" class="text-gray-700 whitespace-pre-wrap">-</p>
+                </div>
+
+                <!-- Timeline de Status (se houver histórico) -->
+                <div id="modal-timeline" class="hidden bg-white border border-gray-200 rounded-lg p-4">
+                    <label class="text-xs font-semibold text-gray-600 uppercase block mb-3">Histórico</label>
+                    <div class="space-y-3">
+                        <!-- Timeline items serão adicionados aqui -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer do Modal com Ações -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex flex-wrap gap-3 justify-end border-t">
+                <button onclick="closeModalViagem()" class="btn-outline px-6 py-2 text-sm">
+                    <i class="fas fa-times"></i>
+                    Fechar
+                </button>
+                <button id="modal-btn-cancelar" onclick="cancelarViagemModal()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-700 transition text-sm hidden">
+                    <i class="fas fa-ban"></i>
+                    Cancelar Viagem
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/notifications.js"></script>
+    <script src="assets/js/price-calculator.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
+
+

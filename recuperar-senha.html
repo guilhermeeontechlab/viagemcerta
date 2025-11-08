@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Recuperar senha - Viagem Certa">
+    <title>Recuperar Senha | Viagem Certa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="antialiased bg-gray-50">
+
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="text-center mb-8 animate-fadeInDown">
+                <a href="index.html" class="inline-flex items-center gap-3 mb-6">
+                    <img src="assets/images/logo.png" alt="Viagem Certa Logo" class="h-12 w-auto mx-auto">
+                </a>
+                <h1 class="text-3xl font-bold text-[#8b8360] mb-2">Recuperar senha</h1>
+                <p class="text-gray-600">Digite seu e-mail para receber o link de recuperação</p>
+            </div>
+
+            <!-- Card de Recuperação -->
+            <div class="card animate-fadeInUp">
+                <!-- Ícone -->
+                <div class="flex justify-center mb-6">
+                    <div class="w-20 h-20 bg-[#eae6c0] rounded-full flex items-center justify-center">
+                        <i class="fas fa-key text-[#8b8360] text-3xl"></i>
+                    </div>
+                </div>
+
+                <form id="recuperar-senha-form" class="space-y-6">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope text-gray-500 mr-1"></i>
+                            E-mail cadastrado
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            class="form-input" 
+                            placeholder="seu@email.com"
+                            required
+                            autocomplete="email"
+                        >
+                        <span class="form-error" id="email-error">E-mail inválido</span>
+                    </div>
+
+                    <!-- Botão Enviar -->
+                    <button 
+                        type="submit" 
+                        id="submit-btn"
+                        class="btn-primary w-full justify-center text-lg py-3"
+                    >
+                        <span id="btn-text">Enviar link de recuperação</span>
+                        <span id="btn-loading" class="hidden">
+                            <div class="spinner"></div>
+                        </span>
+                    </button>
+
+                    <!-- Mensagem de Sucesso -->
+                    <div id="success-message" class="hidden bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <div>
+                                <p class="text-green-700 font-medium">Link enviado com sucesso!</p>
+                                <p class="text-green-600 text-sm mt-1">Verifique sua caixa de entrada e spam.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mensagem de Erro Geral -->
+                    <div id="error-message" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
+                            <span class="text-red-700" id="error-text"></span>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div class="flex flex-col gap-3">
+                    <a href="login.html" class="text-center text-[#8b8360] hover:text-blue-700 font-medium inline-flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        Voltar para o login
+                    </a>
+                    <a href="cadastro.html" class="text-center text-gray-600 hover:text-[#8b8360] text-sm">
+                        Não tem conta? Cadastre-se aqui
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ajuda -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6 animate-fadeInUp delay-200">
+                <div class="flex gap-3">
+                    <i class="fas fa-info-circle text-[#8b8360] mt-1"></i>
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            <strong>Precisa de ajuda?</strong><br>
+                            Entre em contato pelo WhatsApp: 
+                            <a href="https://wa.me/5579974000590" target="_blank" rel="noopener noreferrer" class="text-[#8b8360] font-medium hover:underline">
+                                (79) 9 7400-0590
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
+
+

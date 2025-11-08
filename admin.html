@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel Administrativo - Viagem Certa">
+    <title>Painel Admin | Viagem Certa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="antialiased bg-gray-50">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-gray-900 to-[#b8b594] text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="flex flex-col h-full">
+                <!-- Logo -->
+                <div class="flex items-center justify-between p-6 border-b border-white/10">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-white p-2 rounded-lg">
+                            <img src="assets/images/logo.png" alt="Viagem Certa Logo" class="h-8 w-auto">
+                        </div>
+                        <div>
+                            <div class="text-xs text-red-400 font-semibold">ADMIN</div>
+                            <div class="text-xs text-gray-300">Painel</div>
+                        </div>
+                    </div>
+                    <button id="sidebar-close" class="lg:hidden text-white hover:text-gray-300">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Admin Info -->
+                <div class="p-6 border-b border-white/10 bg-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="admin-avatar">
+                            A
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-white truncate" id="admin-name">Carregando...</p>
+                            <p class="text-xs text-gray-300 truncate" id="admin-email">admin@email.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 p-4 overflow-y-auto">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition" data-page="dashboard">
+                                <i class="fas fa-home w-5"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#viagens-pendentes" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition" data-page="viagens-pendentes">
+                                <i class="fas fa-clock w-5"></i>
+                                <span>Viagens Pendentes</span>
+                                <span id="badge-pendentes" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#todas-viagens" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition" data-page="todas-viagens">
+                                <i class="fas fa-bus w-5"></i>
+                                <span>Todas as Viagens</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#clientes" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition" data-page="clientes">
+                                <i class="fas fa-users w-5"></i>
+                                <span>Clientes</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Logout Button -->
+                <div class="p-4 border-t border-white/10">
+                    <button id="logout-btn" class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 w-full transition">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span>Sair</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Overlay (Mobile) -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="flex items-center justify-between px-4 py-4 lg:px-8">
+                    <!-- Mobile Menu Button -->
+                    <button id="sidebar-open" class="lg:hidden text-gray-600 hover:text-[#8b8360]">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+
+                    <!-- Page Title -->
+                    <div>
+                        <h1 class="text-2xl font-bold text-[#8b8360]" id="page-title">Dashboard Administrativo</h1>
+                        <p class="text-sm text-gray-500" id="page-subtitle">Gerencie todas as solicitações de viagens</p>
+                    </div>
+
+                    <!-- Header Actions -->
+                    <div class="flex items-center gap-4">
+                        <div class="text-right hidden md:block">
+                            <p class="text-xs text-gray-500">Última atualização</p>
+                            <p class="text-sm font-medium text-gray-900" id="last-update">--:--</p>
+                        </div>
+                        <button onclick="location.reload()" class="text-gray-600 hover:text-[#8b8360] transition" title="Atualizar">
+                            <i class="fas fa-sync-alt text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="p-4 lg:p-8">
+                <!-- Dashboard Home -->
+                <div id="content-dashboard" class="page-content">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- Total de Viagens -->
+                        <div class="card hover-lift animate-fadeInUp bg-gradient-to-br from-[#e1ddad] to-[#d4cfa0] text-gray-900 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-white/80 text-sm font-medium mb-1">Total de Viagens</p>
+                                    <p class="text-3xl font-bold" id="stat-total">0</p>
+                                </div>
+                                <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-bus text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pendentes -->
+                        <div class="card hover-lift animate-fadeInUp delay-100 bg-gradient-to-br from-yellow-500 to-orange-600 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-white/80 text-sm font-medium mb-1">Pendentes</p>
+                                    <p class="text-3xl font-bold" id="stat-pendentes">0</p>
+                                </div>
+                                <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-clock text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Em Andamento -->
+                        <div class="card hover-lift animate-fadeInUp delay-200 bg-gradient-to-br from-green-500 to-green-600 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-white/80 text-sm font-medium mb-1">Em Andamento</p>
+                                    <p class="text-3xl font-bold" id="stat-andamento">0</p>
+                                </div>
+                                <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-truck-moving text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Concluídas -->
+                        <div class="card hover-lift animate-fadeInUp delay-300 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-white/80 text-sm font-medium mb-1">Concluídas</p>
+                                    <p class="text-3xl font-bold" id="stat-concluidas">0</p>
+                                </div>
+                                <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Viagens Pendentes de Aprovação -->
+                    <div class="card animate-fadeInUp delay-400">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <h2 class="text-xl font-bold text-[#8b8360]">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                                Viagens Aguardando Aprovação
+                            </h2>
+                            <button onclick="loadAllData()" class="btn-outline text-sm px-4 py-2">
+                                <i class="fas fa-sync-alt"></i>
+                                Atualizar
+                            </button>
+                        </div>
+
+                        <!-- Tabela Desktop -->
+                        <div class="hidden lg:block overflow-x-auto">
+                            <table class="w-full" id="viagens-pendentes-table">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Cliente</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Origem</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Destino</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Data Viagem</th>
+                                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Solicitado em</th>
+                                        <th class="text-center px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="viagens-pendentes-tbody" class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-12 text-gray-500">
+                                            <div class="loading-dots justify-center mb-2">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
+                                            <p>Carregando viagens...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Cards Mobile -->
+                        <div class="lg:hidden space-y-4" id="viagens-pendentes-cards">
+                            <div class="text-center py-12 text-gray-500">
+                                <div class="loading-dots justify-center mb-2">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <p>Carregando viagens...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viagens Pendentes (Página Completa) -->
+                <div id="content-viagens-pendentes" class="page-content hidden">
+                    <div class="card">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-6">Todas as Viagens Pendentes</h2>
+                        <div id="todas-pendentes-container">
+                            <!-- Será preenchido dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Todas as Viagens -->
+                <div id="content-todas-viagens" class="page-content hidden">
+                    <div class="card">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <h2 class="text-2xl font-bold text-[#8b8360]">Todas as Viagens</h2>
+                            <div class="flex gap-2">
+                                <select id="filter-status" class="form-input text-sm py-2" onchange="filterViagens()">
+                                    <option value="">Todos os Status</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="agendado">Agendado</option>
+                                    <option value="ativo">Em Andamento</option>
+                                    <option value="concluido">Concluído</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                                <input type="text" id="search-viagens" placeholder="Buscar cliente ou cidade..." class="form-input text-sm py-2" oninput="filterViagens()">
+                            </div>
+                        </div>
+                        <div id="todas-viagens-container">
+                            <!-- Será preenchido dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clientes -->
+                <div id="content-clientes" class="page-content hidden">
+                    <div class="card">
+                        <h2 class="text-2xl font-bold text-[#8b8360] mb-6">Clientes Cadastrados</h2>
+                        <div id="clientes-container">
+                            <!-- Será preenchido dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Modal de Detalhes da Viagem -->
+    <div id="modal-viagem" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all scale-95 opacity-0">
+            <!-- Header do Modal -->
+            <div class="sticky top-0 bg-gradient-to-r from-[#e1ddad] to-[#d4cfa0] text-white px-6 py-4 rounded-t-2xl flex items-center justify-between">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fas fa-route"></i>
+                    Detalhes da Viagem
+                </h2>
+                <button onclick="closeModalViagem()" class="text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Conteúdo do Modal -->
+            <div class="p-6 space-y-6" id="modal-content">
+                <!-- Será preenchido dinamicamente -->
+            </div>
+
+            <!-- Footer do Modal com Ações Admin -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex flex-wrap gap-3 justify-between border-t">
+                <button onclick="closeModalViagem()" class="btn-outline px-6 py-2 text-sm">
+                    <i class="fas fa-times"></i>
+                    Fechar
+                </button>
+                <div class="flex gap-2" id="modal-actions">
+                    <!-- Ações serão adicionadas dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/admin-auth.js"></script>
+    <script src="assets/js/admin-dashboard.js"></script>
+</body>
+</html>
+

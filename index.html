@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Viagem Certa - Transporte executivo com conforto e segurança para Norte, Nordeste e todo Brasil">
+    <title>Viagem Certa | Transporte Executivo - Norte, Nordeste e Brasil</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="antialiased">
+
+    <!-- Header/Navbar -->
+    <nav class="fixed w-full bg-white shadow-md z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center gap-3">
+                        <img src="assets/images/logo.png" alt="Viagem Certa Logo" class="h-12 w-auto">
+                        <span class="text-2xl font-bold text-[#8b8360]">Viagem Certa</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#inicio" class="text-gray-700 hover:text-[#8b8360] font-medium transition">Início</a>
+                    <a href="#sobre" class="text-gray-700 hover:text-[#8b8360] font-medium transition">Sobre</a>
+                    <a href="#servicos" class="text-gray-700 hover:text-[#8b8360] font-medium transition">Serviços</a>
+                    <a href="#contato" class="text-gray-700 hover:text-[#8b8360] font-medium transition">Contato</a>
+                </div>
+
+                <!-- Auth Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="login.html" class="btn-outline px-6 py-2">Entrar</a>
+                    <a href="cadastro.html" class="btn-primary px-6 py-2">Cadastrar</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-[#8b8360]">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-overlay" class="mobile-overlay"></div>
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="flex justify-between items-center mb-8">
+            <span class="text-xl font-bold text-[#8b8360]">Menu</span>
+            <button id="mobile-menu-close" class="text-gray-700 hover:text-[#8b8360]">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <div class="flex flex-col gap-4">
+            <a href="#inicio" class="text-gray-700 hover:text-[#8b8360] font-medium py-2 transition mobile-menu-link">Início</a>
+            <a href="#sobre" class="text-gray-700 hover:text-[#8b8360] font-medium py-2 transition mobile-menu-link">Sobre</a>
+            <a href="#servicos" class="text-gray-700 hover:text-[#8b8360] font-medium py-2 transition mobile-menu-link">Serviços</a>
+            <a href="#contato" class="text-gray-700 hover:text-[#8b8360] font-medium py-2 transition mobile-menu-link">Contato</a>
+            <div class="divider"></div>
+            <a href="login.html" class="btn-outline w-full justify-center">Entrar</a>
+            <a href="cadastro.html" class="btn-primary w-full justify-center">Cadastrar</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero-pattern pt-32 pb-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center text-white">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fadeInDown">
+                    Transporte Executivo com<br>Conforto e Segurança
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-100 animate-fadeInUp delay-200">
+                    Viaje entre Norte, Nordeste e todo Brasil com qualidade incomparável
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fadeInUp delay-300">
+                    <a href="cadastro.html" class="btn-secondary px-8 py-4 text-lg">
+                        <i class="fas fa-calendar-check"></i>
+                        Reserve sua viagem
+                    </a>
+                    <a href="#servicos" class="btn-outline px-8 py-4 text-lg bg-white hover:bg-transparent">
+                        <i class="fas fa-info-circle"></i>
+                        Saiba mais
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover-lift">
+                        <div class="text-4xl font-bold text-yellow-400 mb-2">100+</div>
+                        <div class="text-gray-100">Viagens Realizadas</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover-lift delay-100">
+                        <div class="text-4xl font-bold text-yellow-400 mb-2">50+</div>
+                        <div class="text-gray-100">Clientes Satisfeitos</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover-lift delay-200">
+                        <div class="text-4xl font-bold text-yellow-400 mb-2">24/7</div>
+                        <div class="text-gray-100">Suporte Disponível</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre a Empresa -->
+    <section id="sobre" class="py-20 px-4 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#8b8360] mb-4">
+                    Sobre a Viagem Certa
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Referência em transporte executivo.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <div class="bg-gradient-to-br from-[#e1ddad] to-[#d4cfa0] rounded-2xl p-8 text-white">
+                        <i class="fas fa-bus text-6xl text-yellow-400 mb-6"></i>
+                        <h3 class="text-2xl font-bold mb-4" style="color: white;">Nossa Missão</h3>
+                        <p class="text-gray-100 leading-relaxed">
+                            Proporcionar experiências excepcionais de transporte, conectando pessoas e mercadorias pelas regiões Norte, Nordeste e todo Brasil com máximo conforto, segurança e pontualidade. Nossa frota executiva oferece o melhor em qualidade para suas viagens.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal delay-200">
+                    <div class="space-y-6">
+                        <div class="flex gap-4 items-start">
+                            <div class="bg-yellow-400 rounded-lg p-3 flex-shrink-0">
+                                <i class="fas fa-shield-alt text-[#8b8360] text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-[#8b8360] mb-2">Segurança Garantida</h4>
+                                <p class="text-gray-600">Veículos revisados e motoristas experientes para sua tranquilidade.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start">
+                            <div class="bg-yellow-400 rounded-lg p-3 flex-shrink-0">
+                                <i class="fas fa-star text-[#8b8360] text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-[#8b8360] mb-2">Conforto Premium</h4>
+                                <p class="text-gray-600">Veículos confortáveis, ar-condicionado e comodidades para sua viagem.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start">
+                            <div class="bg-yellow-400 rounded-lg p-3 flex-shrink-0">
+                                <i class="fas fa-clock text-[#8b8360] text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-[#8b8360] mb-2">Pontualidade</h4>
+                                <p class="text-gray-600">Cumprimento rigoroso de horários para respeitar seu tempo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serviços -->
+    <section id="servicos" class="py-20 px-4 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#8b8360] mb-4">
+                    Nossos Serviços
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Soluções completas de transporte para suas necessidades
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Transporte de Mercadorias -->
+                <div class="card hover-lift reveal">
+                    <div class="bg-[#e1ddad] rounded-xl w-16 h-16 flex items-center justify-center mb-6">
+                        <i class="fas fa-truck text-yellow-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-[#8b8360] mb-4">Transporte de Mercadorias</h3>
+                    <p class="text-gray-600 mb-6">
+                        Entrega segura e rápida de mercadorias para todo Brasil com rastreamento em tempo real.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-500"></i>
+                            Cargas até 5 toneladas
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-500"></i>
+                            Rastreamento online
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-500"></i>
+                            Seguro incluso
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Viagens Executivas -->
+                <div class="card hover-lift reveal delay-100">
+                    <div class="bg-yellow-400 rounded-xl w-16 h-16 flex items-center justify-center mb-6">
+                        <i class="fas fa-user-tie text-[#8b8360] text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-[#8b8360] mb-4">Viagens Executivas</h3>
+                    <p class="text-gray-600 mb-6">
+                        Transporte de passageiros com conforto, qualidade e segurança em veículos executivos premium.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diferenciais -->
+    <section class="py-2 px-4 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#8b8360] mb-4">
+                    Por Que Escolher a Viagem Certa?
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Diferenciais que fazem toda a diferença na sua experiência
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white rounded-xl p-8 text-center hover-lift reveal">
+                    <div class="bg-gradient-to-br from-[#e1ddad] to-[#d4cfa0] rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-couch text-yellow-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#8b8360] mb-3">Conforto e Qualidade</h3>
+                    <p class="text-gray-600">Viaje com máximo conforto em nossos veículos modernos e bem equipados.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-8 text-center hover-lift reveal delay-100">
+                    <div class="bg-gradient-to-br from-[#eae6c0] to-[#e1ddad] rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-shield-alt text-[#8b8360] text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#8b8360] mb-3">Segurança Garantida</h3>
+                    <p class="text-gray-600">Sua segurança é nossa prioridade com motoristas qualificados e veículos revisados.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-8 text-center hover-lift reveal delay-200">
+                    <div class="bg-gradient-to-br from-[#e1ddad] to-[#d4cfa0] rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-clock text-yellow-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#8b8360] mb-3">Pontualidade</h3>
+                    <p class="text-gray-600">Respeitamos seu tempo com rigoroso cumprimento de horários.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-8 text-center hover-lift reveal delay-300">
+                    <div class="bg-gradient-to-br from-[#eae6c0] to-[#e1ddad] rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-map-marked-alt text-[#8b8360] text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#8b8360] mb-3">Rastreamento</h3>
+                    <p class="text-gray-600">Acompanhe sua viagem ou carga em tempo real através da plataforma.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato Rápido -->
+    <section id="contato" class="py-20 px-4 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#8b8360] mb-6">
+                    Entre em Contato
+                </h2>
+                <p class="text-xl text-gray-600 mb-12">
+                    Estamos prontos para atendê-lo. Escolha o canal de sua preferência
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <a href="https://www.instagram.com/transferaracaju/" target="_blank" rel="noopener noreferrer" 
+                       class="bg-gradient-to-br from-purple-600 to-pink-500 text-white rounded-2xl p-8 hover-lift">
+                        <i class="fab fa-instagram text-6xl mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">Instagram</h3>
+                        <p class="text-purple-100 mb-4">Siga-nos no Instagram</p>
+                        <span class="text-lg font-semibold">@transferaracaju</span>
+                    </a>
+
+                    <a href="https://wa.me/5579974000590" target="_blank" rel="noopener noreferrer"
+                       class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-8 hover-lift">
+                        <i class="fab fa-whatsapp text-6xl mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">WhatsApp</h3>
+                        <p class="text-green-100 mb-4">Fale conosco agora</p>
+                        <span class="text-lg font-semibold">(79) 9 7400-0590</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="py-20 px-4 gradient-primary">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                Pronto para viajar com conforto?
+            </h2>
+            <p class="text-xl mb-8 text-gray-100">
+                Cadastre-se agora e reserve sua próxima viagem executiva
+            </p>
+            <a href="cadastro.html" class="btn-secondary px-8 py-4 text-lg inline-flex">
+                <i class="fas fa-user-plus"></i>
+                Criar minha conta
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <!-- Sobre -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="assets/images/logo.png" alt="Viagem Certa Logo" class="h-10 w-auto">
+                    </div>
+                    <p class="text-gray-400">
+                        Transporte executivo com conforto, qualidade e segurança para Norte, Nordeste e todo Brasil.
+                    </p>
+                </div>
+
+                <!-- Links Rápidos -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Links Rápidos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#inicio" class="text-gray-400 hover:text-yellow-400 transition">Início</a></li>
+                        <li><a href="#sobre" class="text-gray-400 hover:text-yellow-400 transition">Sobre</a></li>
+                        <li><a href="#servicos" class="text-gray-400 hover:text-yellow-400 transition">Serviços</a></li>
+                        <li><a href="login.html" class="text-gray-400 hover:text-yellow-400 transition">Entrar</a></li>
+                        <li><a href="cadastro.html" class="text-gray-400 hover:text-yellow-400 transition">Cadastrar</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contato -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contato</h3>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="https://wa.me/5579974000590" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-400 hover:text-yellow-400 transition flex items-center gap-2">
+                                <i class="fab fa-whatsapp"></i>
+                                (79) 9 7400-0590
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.instagram.com/transferaracaju/" target="_blank" rel="noopener noreferrer"
+                               class="text-gray-400 hover:text-yellow-400 transition flex items-center gap-2">
+                                <i class="fab fa-instagram"></i>
+                                @transferaracaju
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Social Icons -->
+                    <div class="flex gap-4 mt-6">
+                        <a href="https://www.instagram.com/transferaracaju/" target="_blank" rel="noopener noreferrer"
+                           class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/5579974000590" target="_blank" rel="noopener noreferrer"
+                           class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-500 transition">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Viagem Certa. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
